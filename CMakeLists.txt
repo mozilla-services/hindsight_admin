@@ -15,7 +15,6 @@ set(CPACK_STRIP_FILES           TRUE)
 set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_SOURCE_DIR}/LICENSE")
 
 set(CPACK_RPM_PACKAGE_LICENSE    "MPLv2.0")
-set(CPACK_RPM_EXCLUDE_FROM_AUTO_FILELIST_ADDITION "/usr/etc")
 set(CPACK_DEBIAN_PACKAGE_DEPENDS "witty (>=3.3.4), source-highlight (>=3.1), luasandbox (>=1.2), hindsight (>= 0.11.4)")
 
 set(PROJECT_PATH "${CMAKE_BINARY_DIR}/${PROJECT_NAME}")
@@ -31,13 +30,16 @@ if(CMAKE_HOST_UNIX)
   find_library(CRYPTO_LIBRARY crypto)
   find_library(RT_LIBRARY rt)
   find_library(LIBZ_LIBRARY z)
+  find_library(LIBDL_LIBRARY dl)
+
   set(UNIX_LIBRARIES
   ${PTHREAD_LIBRARY}
   ${NSL_LIBRARY}
   ${OPENSSL_LIBRARY}
   ${CRYPTO_LIBRARY}
   ${RT_LIBRARY}
-  ${LIBZ_LIBRARY})
+  ${LIBZ_LIBRARY}
+  ${LIBDL_LIBRARY})
 endif()
 
 find_package(Boost 1.53.0 REQUIRED
@@ -53,14 +55,14 @@ include_directories(${Boost_INCLUDE_DIRS})
 find_package(Wt REQUIRED)
 include_directories(${Wt_INCLUDE_DIR})
 set(WT_CONFIG_NAME ${PROJECT_NAME}_server.xml)
-set(WT_CONFIG "${CMAKE_INSTALL_SYSCONFDIR}/wt/${WT_CONFIG_NAME}")
+set(WT_CONFIG "/etc/wt/${WT_CONFIG_NAME}")
 
 find_package(luasandbox 1.2 REQUIRED CONFIG)
 
 include_directories("${PROJECT_PATH}/include")
 
 add_subdirectory(src)
-install(FILES "${WT_CONFIG_NAME}" DESTINATION ${CMAKE_INSTALL_SYSCONFDIR}/wt)
+install(FILES "${WT_CONFIG_NAME}" DESTINATION /etc/wt)
 install(DIRECTORY resource_bundle DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/${PROJECT_NAME})
 install(DIRECTORY resources DESTINATION  ${CMAKE_INSTALL_DATAROOTDIR}/${PROJECT_NAME})
 install(DIRECTORY css DESTINATION  ${CMAKE_INSTALL_DATAROOTDIR}/${PROJECT_NAME})

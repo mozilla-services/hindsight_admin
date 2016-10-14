@@ -150,7 +150,7 @@ static Wt::WApplication* create_application(const Wt::WEnvironment &env)
 int main(int argc, char **argv)
 {
   try {
-    Wt::WServer server(argc, argv, hs::wt_config);
+    Wt::WServer server(argc, argv);
     string hs_cfg;
     server.readConfigurationProperty("hs_cfg", hs_cfg);
     g_cfg.load_cfg(hs_cfg);

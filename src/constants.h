@@ -24,8 +24,6 @@ extern const unsigned version_patch;
 extern const std::string program_name;
 extern const std::string program_description;
 
-extern const std::string wt_config;
-
 }
 }
 }

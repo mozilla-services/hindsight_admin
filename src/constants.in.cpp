@@ -19,8 +19,6 @@ const unsigned version_patch = @PROJECT_VERSION_PATCH@;
 const std::string program_name("@PROJECT_NAME@");
 const std::string program_description("@CPACK_PACKAGE_DESCRIPTION_SUMMARY@");
 
-const std::string wt_config("@WT_CONFIG@");
-
 }
 }
 }
