@@ -1,0 +1,69 @@
+body {
+    font-family: arial;
+}
+
+h1 {
+    text-align: center;
+}
+
+.links {
+    margin: 10px;
+    text-align: center;
+}
+
+.links a {
+    padding-left: 5px;
+    padding-right: 5px;
+}
+
+.selected-link {
+    font-weight: bold;
+}
+
+.Wt-auth-logged-in {
+    position: absolute;
+    right: 0px;
+    top: 0px;
+    font-size: 90%;
+}
+
+.running {
+   color: darkgreen;
+}
+
+.terminated {
+   color: darkred;
+}
+
+.Wt-stack {
+    padding-top: 5px;
+}
+
+textarea {
+    width: 98%;
+    font-family: monospace;
+    font-size: .9em;
+}
+
+input {
+    width: 98%;
+    font-family: monospace;
+    font-size: .9em;
+}
+
+.input_container {
+width: 70%;
+}
+
+.result_container {
+width: 30%;
+}
+
+.result_output {
+background-color:#E8E8E8;
+}
+
+.result_error {
+color:red;
+}
+
