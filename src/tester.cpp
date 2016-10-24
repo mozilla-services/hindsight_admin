@@ -46,19 +46,23 @@ namespace hs = mozilla::services::hindsight;
 
 namespace {
 static const char *strip_cfg[] = {
-  "path",
-  "cpath",
+  // generic sandbox values
   "output_limit",
   "memory_limit",
   "instruction_limit",
-  "restricted_headers",
-  "thread",
-  "Hostname",
-  "Pid",
-  "Logger",
+  "path",
+  "cpath",
   "log_level",
+
+  // Hindsight sandbox values
+  // "ticker_interval", // allow
+  // "preserve_data", // allow
+  "restricted_headers",
+  "shutdown_on_terminate",
+  "thread",
   "process_message_inject_limit",
   "timer_event_inject_limit",
+
   NULL };
 }
 
@@ -632,6 +636,7 @@ void hs::tester::test_plugin()
 
 void hs::tester::deploy_plugin()
 {
+  static const char ticker_interval[] = "ticker_interval";
   m_debug->clear();
 
   lsb_message_matcher *mm = NULL;
@@ -673,8 +678,18 @@ void hs::tester::deploy_plugin()
     while ((c = *str++)) {
       hash = c + (hash << 6) + (hash << 16) - hash;
     }
-    lua_pushinteger(L, (int)(hash % 64));
+    lua_pushinteger(L, (lua_Integer)(hash % 64));
     lua_setglobal(L, "thread");
+
+    // round the ticker_interval up to the next minute
+    lua_getglobal(L, ticker_interval);
+    lua_Integer li = lua_tointeger(L, -1);
+    lua_pop(L, 1);
+    lua_Integer remainder = li % 60;
+    if (li == 0 || remainder != 0) {
+      lua_pushinteger(L, li + (60 - remainder));
+      lua_setglobal(L, ticker_interval);
+    }
     output_table(fh, L, "", false);
     fclose(fh);
   }
