@@ -111,7 +111,11 @@ void hs::hindsight_cfg::load_cfg(const string &fn)
       if (m_lua_path.empty()) throw runtime_error("invalid hs_cfg no: analysis_lua_cpath");
       lua_pop(L, 1);
 
-      m_output_limit = m_memory_limit =  m_instruction_limit = -1;
+      m_output_limit = -1;
+      m_memory_limit = -1;
+      m_instruction_limit = -1;
+      m_pm_im_limit = 0;
+      m_te_im_limit = 10;
       lua_getglobal(L, "analysis_defaults");
       if (lua_type(L, -1) == LUA_TTABLE) {
         lua_getfield(L, -1, "output_limit");
@@ -129,6 +133,18 @@ void hs::hindsight_cfg::load_cfg(const string &fn)
         lua_getfield(L, -1, "instruction_limit");
         if (lua_type(L, -1) == LUA_TNUMBER) {
           m_instruction_limit = static_cast<int>(lua_tointeger(L, -1));
+        }
+        lua_pop(L, 1);
+
+        lua_getfield(L, -1, "process_message_inject_limit");
+        if (lua_type(L, -1) == LUA_TNUMBER) {
+          m_pm_im_limit = static_cast<int>(lua_tointeger(L, -1));
+        }
+        lua_pop(L, 1);
+
+        lua_getfield(L, -1, "timer_event_inject_limit");
+        if (lua_type(L, -1) == LUA_TNUMBER) {
+          m_te_im_limit = static_cast<int>(lua_tointeger(L, -1));
         }
         lua_pop(L, 1);
       }
@@ -205,16 +221,16 @@ void hs::hindsight_admin::onAuthEvent()
     Wt::WContainerWidget *lpeg = new Wt::WContainerWidget();
     lpeg->addWidget(new Wt::WText("Grammar Tester - TBD<br/>"));
     Wt::WAnchor *anchor = new Wt::WAnchor(Wt::WLink("http://lpeg.trink.com"), tr("lpeg_grammar_tester"), lpeg);
-    anchor->setTarget(Wt::AnchorTarget::TargetNewWindow) ;
+    anchor->setTarget(Wt::AnchorTarget::TargetNewWindow);
     m_tw->addTab(lpeg, tr("tab_lpeg"));
 
     Wt::WContainerWidget *dash = new Wt::WContainerWidget();
     dash->addWidget(new Wt::WText("Output Dashboards - TBD<br/>"));
     anchor = new Wt::WAnchor(Wt::WLink("/dashboard_output/"), tr("raw_output"), dash);
-    anchor->setTarget(Wt::AnchorTarget::TargetNewWindow) ;
+    anchor->setTarget(Wt::AnchorTarget::TargetNewWindow);
 
     anchor = new Wt::WAnchor(Wt::WLink("/dashboard_output/graphs"), tr("graph_output"), dash);
-    anchor->setTarget(Wt::AnchorTarget::TargetNewWindow) ;
+    anchor->setTarget(Wt::AnchorTarget::TargetNewWindow);
     m_tw->addTab(dash, tr("tab_dashboards"));
 
     Wt::WContainerWidget *footer = new Wt::WContainerWidget(m_admin);

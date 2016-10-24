@@ -37,6 +37,8 @@ struct hindsight_cfg {
   int                     m_output_limit;
   int                     m_memory_limit;
   int                     m_instruction_limit;
+  int                     m_pm_im_limit;
+  int                     m_te_im_limit;
 };
 
 

@@ -54,6 +54,7 @@ public:
   ~tester();
   void output_message(lsb_heka_message *m, Wt::WTreeNode *root);
   void append_log(const char *s);
+  int m_im_limit;
 
 private:
   Wt::WWidget* result();

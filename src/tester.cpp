@@ -57,6 +57,8 @@ static const char *strip_cfg[] = {
   "Pid",
   "Logger",
   "log_level",
+  "process_message_inject_limit",
+  "timer_event_inject_limit",
   NULL };
 }
 
@@ -93,6 +95,10 @@ void lcb(void *context, const char *component, int level, const char *fmt, ...)
 int aim(void *parent, const char *pb, size_t pb_len)
 {
   hs::tester *t = reinterpret_cast<hs::tester *>(parent);
+  if (t->m_im_limit == 0) {
+    return 1;
+  }
+  --t->m_im_limit;
   lsb_heka_message m;
   lsb_init_heka_message(&m, 10);
   lsb_logger logger = { parent, lcb };
@@ -586,6 +592,8 @@ void hs::tester::test_plugin()
   if (m_hs_cfg->m_instruction_limit >= 0) {
     cfg << "instruction_limit = " << m_hs_cfg->m_instruction_limit << "\n";
   }
+  cfg << "process_message_inject_limit = " << m_hs_cfg->m_pm_im_limit << "\n";
+  cfg << "timer_event_inject_limit = " << m_hs_cfg->m_te_im_limit << "\n";
   cfg << "path = [[" << m_hs_cfg->m_lua_path << "]]\n";
   cfg << "cpath = [[" << m_hs_cfg->m_lua_cpath << "]]\n";
   cfg << "log_level = 7\n";
@@ -593,6 +601,7 @@ void hs::tester::test_plugin()
   int rv = 0;
   hsb = lsb_heka_create_analysis(this, tmp.string().c_str(), NULL, cfg.str().c_str(), &logger, aim);
   for (int i = 0; i < m_inputs_cnt; ++i) {
+    m_im_limit = m_hs_cfg->m_pm_im_limit;
     rv = lsb_heka_pm_analysis(hsb, &m_inputs[i].m, false);
     if (rv > 0) {
       lcb(this, "", 7, "%s\n", lsb_heka_get_error(hsb));
@@ -600,6 +609,7 @@ void hs::tester::test_plugin()
     }
   }
   if (rv <= 0) {
+    m_im_limit = m_hs_cfg->m_te_im_limit;
     rv = lsb_heka_timer_event(hsb, 0, true);
     if (rv > 0) {
       lcb(this, "", 7, "%s\n", lsb_heka_get_error(hsb));
@@ -609,9 +619,11 @@ void hs::tester::test_plugin()
   m_itree->expand();
   remove(tmp);
   if (rv <= 0) {
-    m_cfg_sig = m_cfg->textInput().connect(this, &tester::disable_deploy);
-    m_sandbox_sig = m_sandbox->textInput().connect(this, &tester::disable_deploy);
-    m_deploy->setEnabled(true);
+    if (m_deploy->isDisabled()) {
+      m_cfg_sig = m_cfg->textInput().connect(this, &tester::disable_deploy);
+      m_sandbox_sig = m_sandbox->textInput().connect(this, &tester::disable_deploy);
+      m_deploy->setEnabled(true);
+    }
   } else {
     disable_deploy();
   }
@@ -678,6 +690,7 @@ void hs::tester::deploy_plugin()
 
 
 hs::tester::tester(hs::session *s, const hindsight_cfg *hs_cfg, hs::plugins *p) :
+    m_im_limit(0),
     m_session(s),
     m_hs_cfg(hs_cfg),
     m_plugins(p),
