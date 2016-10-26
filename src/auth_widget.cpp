@@ -6,6 +6,10 @@
 
 /// @brief Hindsight Admin Auth Widget Implementation @file
 
+#include <string>
+
+#include <Wt/WApplication>
+
 #include "auth_widget.h"
 #include "registration_model.h"
 
@@ -20,7 +24,16 @@ hs::auth_widget::auth_widget(hs::session &s) :
   am->addPasswordAuth(&hs::session::password_auth());
   am->addOAuth(hs::session::oauth());
   setModel(am);
-  setRegistrationEnabled(true);
+
+  Wt::WApplication *app = Wt::WApplication::instance();
+  std::string val;
+  if (app->readConfigurationProperty("enableRegistration", val)) {
+    if (val == "true") {
+      setRegistrationEnabled(true);
+    } else {
+      setRegistrationEnabled(false);
+    }
+  }
 }
 
 

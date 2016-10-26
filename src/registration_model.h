@@ -10,11 +10,14 @@
 #ifndef hindsight_admin_registration_model_h_
 #define hindsight_admin_registration_model_h_
 
+#include <unordered_set>
+
 #include <Wt/Auth/AbstractUserDatabase>
 #include <Wt/Auth/RegistrationModel>
 #include <Wt/Auth/AuthService>
 #include <Wt/Auth/Login>
 #include <Wt/Auth/Identity>
+#include <Wt/WFormModel>
 #include <Wt/WObject>
 #include <Wt/WString>
 
@@ -27,11 +30,14 @@ public:
   registration_model(const Wt::Auth::AuthService &auth,
                      Wt::Auth::AbstractUserDatabase &users,
                      Wt::Auth::Login &login,
-                     Wt::WObject *parent = 0) :
-      Wt::Auth::RegistrationModel(auth, users, login, parent) { }
+                     Wt::WObject *parent = 0);
 
   Wt::WString validateLoginName(const Wt::WString &name) const override;
-  bool registerIdentified(const Wt::Auth::Identity &identity)override;
+  bool validateField(Wt::WFormModel::Field field) override;
+  bool registerIdentified(const Wt::Auth::Identity &identity) override;
+
+private:
+  std::unordered_set<std::string> m_auth_domains;
 };
 
 }

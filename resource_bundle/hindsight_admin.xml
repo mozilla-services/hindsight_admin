@@ -51,7 +51,6 @@
     <message id="heka_ap">Heka Analysis Plugin</message>
     <message id="heka_ap_cfg">Heka Analysis Plugin Configuration</message>
     <message id="no_matches">no matches found in the current output file</message>
-    
 
     <message id="deploying">Deploying</message>
     <message id="stopped">Stopped</message>
@@ -71,9 +70,14 @@
 
     <message id="copyright">Copyright &copy; 2016 Mozilla Services</message>
 
+    <message id="unauthorized_domain">unauthorized domain</message>
+    <!--
     <message id="Wt.Auth.login-form-info">
         If you would just like to look around, use the <b>guest/guest</b> account.
     </message>
+    -->
+
+    <message id="Wt.Auth.login-form-info"></message>
 
     <!-- Emails -->
 
@@ -123,12 +127,12 @@
         If you requested this, then choose a new password by clicking on the
         following link or copying the URL into your browser. If you didn't
         request this, you can safely ignore and discard this email.
- 
+
         Please copy and paste the following URL into your browser: (Note: be
         sure to copy the entire URL, including any part of it which goes onto a
         second line.)
- 
-        {3} 
+
+        {3}
 
         Your truly,
 
