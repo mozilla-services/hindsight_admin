@@ -55,8 +55,7 @@ std::string hs::session::user_name() const
 void hs::session::configure_auth()
 {
   g_auth_service.setAuthTokensEnabled(true, "hindsight_admin");
-  g_auth_service.setEmailVerificationEnabled(true);
-  //g_auth_service.setEmailVerificationRequired(true);
+  g_auth_service.setEmailVerificationRequired(true);
 
   Auth::PasswordVerifier *verifier = new Auth::PasswordVerifier();
   verifier->addHashFunction(new Auth::BCryptHashFunction(7));
@@ -87,15 +86,16 @@ hs::session::session()
   dbo::Transaction transaction(m_session);
   try {
     m_session.createTables();
-
-    /*
-     * Add a default guest/guest account
-     */
-    Auth::User guest_user = m_users->registerNew();
-    guest_user.addIdentity(Auth::Identity::LoginName, "guest");
-    guest_user.setEmail("guest@example.com");
-    g_password_service.updatePassword(guest_user, "guest");
-
+    Wt::WApplication *app = WApplication::instance();
+    std::string val;
+    if (app->readConfigurationProperty("enableGuest", val)) {
+      if (val == "true") {
+        Auth::User guest_user = m_users->registerNew();
+        guest_user.addIdentity(Auth::Identity::LoginName, "guest");
+        guest_user.setEmail("guest@example.com");
+        g_password_service.updatePassword(guest_user, "guest");
+      }
+    }
     Wt::log("info") << "Database created";
   } catch (...) {
     Wt::log("info") << "Using existing database";

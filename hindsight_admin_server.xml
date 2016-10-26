@@ -44,6 +44,12 @@
 	<progressive-bootstrap>false</progressive-bootstrap>
 	<session-id-cookie>false</session-id-cookie>
 	<properties>
+        <!-- access control -->
+        <property name="enableGuest">false</property>
+        <property name="enableRegistration">false</property>
+        <!-- semicolon delimited list -->
+        <property name="authorizedDomains">mozilla.com;mozilla.org</property>
+
         <!-- location of the user database -->
         <property name="appRoot">/var/tmp</property>
 	    <property name="resourcesURL">resources/</property>

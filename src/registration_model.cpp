@@ -9,11 +9,32 @@
 #include <algorithm>
 #include <locale>
 #include <string>
+#include <sstream>
+
+#include <boost/algorithm/string/classification.hpp>
+#include <boost/algorithm/string/split.hpp>
+#include <Wt/Auth/User>
+#include <Wt/WApplication>
+#include <Wt/WValidator>
 
 #include "registration_model.h"
 #include "session.h"
 
 namespace hs = mozilla::services::hindsight;
+
+hs::registration_model::registration_model(const Wt::Auth::AuthService &auth,
+                                           Wt::Auth::AbstractUserDatabase &users,
+                                           Wt::Auth::Login &login,
+                                           Wt::WObject *parent) :
+    Wt::Auth::RegistrationModel(auth, users, login, parent)
+{
+  Wt::WApplication *app = Wt::WApplication::instance();
+  std::string val;
+  if (app->readConfigurationProperty("authorizedDomains", val)) {
+    boost::split(m_auth_domains, val, boost::is_any_of(";"), boost::token_compress_on);
+  }
+}
+
 
 Wt::WString hs::registration_model::validateLoginName(const Wt::WString &name) const
 {
@@ -51,6 +72,32 @@ Wt::WString hs::registration_model::validateLoginName(const Wt::WString &name) c
 }
 
 
+bool hs::registration_model::validateField(Wt::WFormModel::Field field)
+{
+  bool validated = Wt::Auth::RegistrationModel::validateField(field);
+  if (field == Wt::Auth::RegistrationModel::EmailField && !m_auth_domains.empty()) {
+    bool auth_domain = false;
+    std::string email = valueText(Wt::Auth::RegistrationModel::EmailField).toUTF8();
+    size_t pos = email.find('@');
+    if (pos != std::string::npos) {
+      if (m_auth_domains.find(email.substr(pos + 1)) != m_auth_domains.end()) {
+        auth_domain = true;
+      }
+    }
+
+    if (auth_domain) {
+      setValid(field,  Wt::WString::Empty);
+    } else {
+      setValidation(field,
+                    Wt::WValidator::Result(Wt::WValidator::Invalid,
+                                           Wt::WString("unauthorized domain")));
+    }
+    return auth_domain;
+  }
+  return validated;
+}
+
+
 bool hs::registration_model::registerIdentified(const Wt::Auth::Identity &identity)
 {
   bool ok = Wt::Auth::RegistrationModel::registerIdentified(identity);
@@ -66,6 +113,7 @@ bool hs::registration_model::registerIdentified(const Wt::Auth::Identity &identi
       }
       setValue(LoginNameField, Wt::WString::fromUTF8(suggested));
     }
+    validate();
   }
   return ok;
 }
