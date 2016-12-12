@@ -585,6 +585,7 @@ void hs::tester::test_plugin()
   lsb_logger logger = { this, lcb };
 
   std::stringstream cfg;
+  cfg << m_cfg->text() << endl;
   cfg << "Hostname = 'test.example.com'\n";
   cfg << "Logger = 'analysis." << fn.substr(0, fn.find_last_of(".")) << "'\n";
   if (m_hs_cfg->m_output_limit >= 0) {
