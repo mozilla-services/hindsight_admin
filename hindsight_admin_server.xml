@@ -50,6 +50,10 @@
         <!-- semicolon delimited list -->
         <property name="authorizedDomains">mozilla.com;mozilla.org</property>
 
+        <!-- semicolon delimited list, remove to disable output plugin deployment -->
+        <property name="outputPlugins">s3_parquet.lua</property>
+        <property name="outputDir">/var/tmp/output</property>
+
         <!-- location of the user database -->
         <property name="appRoot">/var/tmp</property>
 	    <property name="resourcesURL">resources/</property>

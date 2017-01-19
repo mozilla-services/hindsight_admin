@@ -4,10 +4,10 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-/// @brief Hindsight Plugin Tester @file
+/// @brief Hindsight Output Plugin Tester @file
 
-#ifndef hindsight_admin_tester_h_
-#define hindsight_admin_tester_h_
+#ifndef hindsight_admin_output_tester_h_
+#define hindsight_admin_output_tester_h_
 
 #include <string>
 #include <sstream>
@@ -33,14 +33,11 @@ namespace mozilla {
 namespace services {
 namespace hindsight {
 
-class tester : public Wt::WContainerWidget {
+class output_tester : public Wt::WContainerWidget {
 public:
-  tester(session *s, const hindsight_cfg *hs_cfg, plugins *p);
-  ~tester();
-  void output_message(lsb_heka_message *m, Wt::WTreeNode *root);
+  output_tester(session *s, const hindsight_cfg *hs_cfg, plugins *p);
+  ~output_tester();
   void append_log(const char *s);
-  int           m_im_limit;
-  Wt::WTreeNode *m_itree; // managed by the container
 
 private:
   Wt::WWidget* result();
@@ -48,10 +45,11 @@ private:
   void deploy_plugin();
   void run_matcher();
   void disable_deploy();
+  bool test_init();
   Wt::WWidget* message_matcher();
   void finalize();
   void message_box_dismissed();
-  std::string get_file_number();
+  void selection_changed(Wt::WString name);
 
   session             *m_session;
   const hindsight_cfg *m_hs_cfg;
@@ -61,15 +59,15 @@ private:
 
   // pointers managed by the container
   Wt::WTextArea         *m_cfg;
-  Wt::WTextArea         *m_sandbox;
   Wt::WContainerWidget  *m_msgs;
   Wt::WContainerWidget  *m_debug;
-  Wt::WContainerWidget  *m_injected;
   Wt::WTextArea         *m_logs;
   Wt::WPushButton       *m_deploy;
+  Wt::WSelectionBox     *m_selection;
+  source_viewer         *m_source;
   // end managed pointers
+
   Wt::Signals::connection m_cfg_sig;
-  Wt::Signals::connection m_sandbox_sig;
   struct input_msg m_inputs[g_max_messages];
   int m_inputs_cnt;
 };

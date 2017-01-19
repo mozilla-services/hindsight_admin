@@ -22,6 +22,9 @@ class source_viewer : public Wt::WViewWidget {
 public:
   source_viewer() { }
   void set_filename(const std::string &fn);
+  const std::string& get_filename() {
+    return m_file;
+  }
 
 protected:
   virtual Wt::WWidget* renderView() override;

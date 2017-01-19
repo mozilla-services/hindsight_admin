@@ -35,6 +35,9 @@ Wt::WWidget* hs::source_viewer::renderView()
   result->setMinimumSize(800, 400);
   result->setMaximumSize(800, 400);
   result->setInline(false);
+  if (m_file.empty()) {
+    return result;
+  }
 
   fs::path tmp("/tmp");
   tmp /= Wt::WApplication::instance()->sessionId();

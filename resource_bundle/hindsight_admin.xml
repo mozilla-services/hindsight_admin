@@ -19,6 +19,7 @@
     <message id="te_avg">TE Avg</message>
     <message id="te_sd">TE SD</message>
 
+    <message id="plugin_output_dir">Plugin Output Directory<br/></message>
     <message id="raw_output">Raw Dashboard Output<br/></message>
     <message id="graph_output">Graphical Dashboard Output<br/></message>
     <message id="view_lua">View Source</message>
@@ -33,6 +34,7 @@
     <message id="run_matcher">Run Matcher</message>
     <message id="test_plugin">Test Plugin</message>
     <message id="deploy_plugin">Deploy Plugin</message>
+    <message id="deploy_cfg">Deploy Configuration</message>
     <message id="stop_plugin?">Stop Plugin '{1}'?</message>
     <message id="restart_plugin?">Restart Plugin '{1}'?</message>
     <message id="plugin_not_found">Plugin not found</message>
@@ -50,6 +52,8 @@
     <message id="injected_messages">Injected Messages</message>
     <message id="heka_ap">Heka Analysis Plugin</message>
     <message id="heka_ap_cfg">Heka Analysis Plugin Configuration</message>
+    <message id="heka_op_cfg">Heka Output Plugin Configuration</message>
+    <message id="heka_op_plugin">Heka Output Plugin</message>
     <message id="no_matches">no matches found in the current output file</message>
 
     <message id="deploying">Deploying</message>
@@ -63,7 +67,8 @@
     <message id="confirm">Confirm</message>
 
     <message id="tab_plugins">Plugins</message>
-    <message id="tab_deploy">Plugin Deployment</message>
+    <message id="tab_deploy">Analysis Plugin Deployment</message>
+    <message id="tab_output_deploy">Output Plugin Deployment</message>
     <message id="tab_lpeg">Grammar Tester</message>
     <message id="tab_dashboards">Dashboards</message>
     <message id="lpeg_grammar_tester">External Grammar Tester</message>

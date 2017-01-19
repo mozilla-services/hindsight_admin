@@ -34,11 +34,15 @@ struct hindsight_cfg {
   boost::filesystem::path m_cfg;
   std::string             m_lua_path;
   std::string             m_lua_cpath;
+  std::string             m_lua_iopath;
+  std::string             m_lua_iocpath;
   int                     m_output_limit;
   int                     m_memory_limit;
   int                     m_instruction_limit;
   int                     m_pm_im_limit;
   int                     m_te_im_limit;
+  int                     m_omemory_limit;
+  int                     m_oinstruction_limit;
 };
 
 

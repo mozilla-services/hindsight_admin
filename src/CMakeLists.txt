@@ -8,8 +8,10 @@ set(HINDSIGHT_ADMIN_SRC
   constants.cpp
   tester.cpp
   hindsight_admin.cpp
+  output_tester.cpp
   plugins.cpp
   registration_model.cpp
+  run_matcher.cpp
   session.cpp
   source_viewer.cpp
   user.cpp

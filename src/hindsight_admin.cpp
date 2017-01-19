@@ -23,6 +23,7 @@
 #include "auth_widget.h"
 #include "constants.h"
 #include "hindsight_admin.h"
+#include "output_tester.h"
 #include "plugins.h"
 #include "session.h"
 #include "tester.h"
@@ -108,12 +109,24 @@ void hs::hindsight_cfg::load_cfg(const string &fn)
 
       lua_getglobal(L, "analysis_lua_cpath");
       m_lua_cpath = lua_tostring(L, -1);
-      if (m_lua_path.empty()) throw runtime_error("invalid hs_cfg no: analysis_lua_cpath");
+      if (m_lua_cpath.empty()) throw runtime_error("invalid hs_cfg no: analysis_lua_cpath");
+      lua_pop(L, 1);
+
+      lua_getglobal(L, "io_lua_path");
+      m_lua_iopath = lua_tostring(L, -1);
+      if (m_lua_iopath.empty()) throw runtime_error("invalid hs_cfg no: io_lua_path");
+      lua_pop(L, 1);
+
+      lua_getglobal(L, "io_lua_cpath");
+      m_lua_iocpath = lua_tostring(L, -1);
+      if (m_lua_iopath.empty()) throw runtime_error("invalid hs_cfg no: io_lua_cpath");
       lua_pop(L, 1);
 
       m_output_limit = -1;
       m_memory_limit = -1;
       m_instruction_limit = -1;
+      m_omemory_limit = -1;
+      m_oinstruction_limit = -1;
       m_pm_im_limit = 0;
       m_te_im_limit = 10;
       lua_getglobal(L, "analysis_defaults");
@@ -145,6 +158,22 @@ void hs::hindsight_cfg::load_cfg(const string &fn)
         lua_getfield(L, -1, "timer_event_inject_limit");
         if (lua_type(L, -1) == LUA_TNUMBER) {
           m_te_im_limit = static_cast<int>(lua_tointeger(L, -1));
+        }
+        lua_pop(L, 1);
+      }
+      lua_pop(L, 1);
+
+      lua_getglobal(L, "output_defaults");
+      if (lua_type(L, -1) == LUA_TTABLE) {
+        lua_getfield(L, -1, "memory_limit");
+        if (lua_type(L, -1) == LUA_TNUMBER) {
+          m_omemory_limit = static_cast<int>(lua_tointeger(L, -1));
+        }
+        lua_pop(L, 1);
+
+        lua_getfield(L, -1, "instruction_limit");
+        if (lua_type(L, -1) == LUA_TNUMBER) {
+          m_oinstruction_limit = static_cast<int>(lua_tointeger(L, -1));
         }
         lua_pop(L, 1);
       }
@@ -217,6 +246,11 @@ void hs::hindsight_admin::onAuthEvent()
     hs::plugins *plugins = new hs::plugins(&m_session, m_hs_cfg);
     m_tw->addTab(plugins, tr("tab_plugins"));
     m_tw->addTab(new hs::tester(&m_session, m_hs_cfg, plugins), tr("tab_deploy"));
+
+    std::string val;
+    if (Wt::WApplication::instance()->readConfigurationProperty("outputPlugins", val)) {
+      m_tw->addTab(new hs::output_tester(&m_session, m_hs_cfg, plugins), tr("tab_output_deploy"));
+    }
 
     Wt::WContainerWidget *lpeg = new Wt::WContainerWidget();
     lpeg->addWidget(new Wt::WText("Grammar Tester - TBD<br/>"));
