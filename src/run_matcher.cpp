@@ -258,7 +258,8 @@ size_t hs::run_matcher(const boost::filesystem::path &path,
                        const std::string &user,
                        Wt::WContainerWidget *c,
                        struct hs::input_msg *msgs,
-                       size_t msgs_size)
+                       size_t msgs_size,
+                       string *err_msg)
 {
   Wt::WTree *tree = new Wt::WTree(c);
   tree->setSelectionMode(Wt::SingleSelection);
@@ -268,9 +269,8 @@ size_t hs::run_matcher(const boost::filesystem::path &path,
   root->label()->setTextFormat(Wt::PlainText);
   root->setLoadPolicy(Wt::WTreeNode::NextLevelLoading);
 
-  string err_msg;
   lsb_message_matcher *mm = NULL;
-  lua_State *L = validate_cfg(cfg, user, &mm, &err_msg);
+  lua_State *L = validate_cfg(cfg, user, &mm, err_msg);
   if (!L) {
     return 0;
   }

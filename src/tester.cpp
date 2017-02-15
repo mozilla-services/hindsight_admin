@@ -115,14 +115,21 @@ void hs::tester::run_matcher()
   m_msgs->clear();
   m_injected->clear();
   m_debug->clear();
+  string err_msg;
   m_inputs_cnt = hs::run_matcher(m_hs_cfg->m_hs_output,
                                  m_cfg->text().toUTF8(),
                                  m_session->user_name(),
                                  m_msgs,
-                                 m_inputs, g_max_messages);
+                                 m_inputs, g_max_messages,
+                                 &err_msg);
   if (m_inputs_cnt == 0) {
-    m_logs = new Wt::WTextArea(m_debug);
-    m_logs->setText(tr("no_matches"));
+    Wt::WText *t = new Wt::WText(m_debug);
+    if (err_msg.empty()) {
+      t->setText(tr("no_matches"));
+    } else {
+      t->setText(err_msg);
+    }
+    t->setStyleClass("result_error");
   }
 }
 
