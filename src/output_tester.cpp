@@ -279,6 +279,8 @@ void hs::output_tester::deploy_plugin()
     lua_pushstring(L, val.c_str());
     lua_setglobal(L, "output_dir");
     lua_pushboolean(L, 1);
+    lua_setglobal(L, "remove_checkpoints_on_terminate");
+    lua_pushboolean(L, 1);
     lua_setglobal(L, "hindsight_admin");
 
     lua_pushvalue(L, LUA_GLOBALSINDEX);
