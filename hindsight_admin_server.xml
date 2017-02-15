@@ -63,6 +63,7 @@
         <!-- any relative paths in the hs_cfg will be interpreted relative to
         the location of the configuration file -->
 	    <property name="hs_cfg">/work/hindsight.cfg</property>
+	    <property name="max_plugin_cfg_kb">32</property>
         <property name="google-oauth2-redirect-endpoint">
 		http://localhost:2020/oauth2callback
 	    </property>

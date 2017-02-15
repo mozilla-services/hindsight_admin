@@ -13,6 +13,7 @@
 
 #include <Wt/WText>
 #include <Wt/WTree>
+#include <boost/lexical_cast.hpp>
 #include <luasandbox/heka/sandbox.h>
 #include <luasandbox/util/protobuf.h>
 
@@ -166,11 +167,24 @@ get_file_number(const boost::filesystem::path &path) // todo add support for the
 }
 
 
+static size_t get_max_cfg()
+{
+  size_t max_cfg = 0;
+  string val;
+  if (Wt::WApplication::instance()->readConfigurationProperty("max_plugin_cfg_kb", val)) {
+    size_t cv = boost::lexical_cast<size_t>(val);
+    max_cfg = cv * 1024;
+  }
+  return max_cfg ? max_cfg : 32 * 1024;
+}
+
+
 lua_State* hs::validate_cfg(const std::string &cfg,
                             const std::string &user,
                             lsb_message_matcher **mm,
                             std::string *err_msg)
 {
+  static size_t max_cfg = 0;
   stringstream err;
   fs::path fn;
   string nfn;
@@ -179,6 +193,16 @@ lua_State* hs::validate_cfg(const std::string &cfg,
   int v = 0;
   int ret = 0;
   *mm = NULL;
+
+  if (!max_cfg) {
+    max_cfg =  get_max_cfg();
+  }
+
+  if (cfg.size() > max_cfg) {
+    err << "the configuration exceeds " << max_cfg << " bytes";
+    *err_msg = err.str();
+    return NULL;
+  }
 
   lua_State *L = luaL_newstate();
   if (!L) {
