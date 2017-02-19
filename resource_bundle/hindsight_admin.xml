@@ -18,6 +18,11 @@
     <message id="pm_sd">PM SD</message>
     <message id="te_avg">TE Avg</message>
     <message id="te_sd">TE SD</message>
+    <message id="messages_processed">Messages</message>
+    <message id="%utilization">% Util</message>
+    <message id="%message_matcher">% MM</message>
+    <message id="%process_message">% PM</message>
+    <message id="%timer_event">% TE</message>
 
     <message id="plugin_output_dir">Plugin Output Directory<br/></message>
     <message id="raw_output">Raw Dashboard Output<br/></message>
@@ -66,6 +71,7 @@
     <message id="success">Success</message>
     <message id="confirm">Confirm</message>
 
+    <message id="tab_utilization">Utilization</message>
     <message id="tab_plugins">Plugins</message>
     <message id="tab_deploy">Analysis Plugin Deployment</message>
     <message id="tab_output_deploy">Output Plugin Deployment</message>

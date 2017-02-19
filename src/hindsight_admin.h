@@ -30,7 +30,8 @@ struct hindsight_cfg {
   boost::filesystem::path m_hs_run;
   boost::filesystem::path m_hs_load;
   boost::filesystem::path m_hs_output;
-  boost::filesystem::path m_stats;
+  boost::filesystem::path m_plugins;
+  boost::filesystem::path m_utilization;
   boost::filesystem::path m_cfg;
   std::string             m_lua_path;
   std::string             m_lua_cpath;

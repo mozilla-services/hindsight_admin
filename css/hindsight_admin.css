@@ -28,11 +28,30 @@ h1 {
 }
 
 .running {
-   color: darkgreen;
+    color: darkgreen;
 }
 
 .terminated {
-   color: darkred;
+    color: darkred;
+}
+
+.utilization_low {
+    color: white;
+    background-color: green;
+}
+
+.utilization_medium {
+    background-color: yellow;
+}
+
+.utilization_high {
+    color: white;
+    background-color: red;
+}
+
+.utilization_excessive {
+    color: white;
+    background-color: darkred;
 }
 
 .Wt-stack {

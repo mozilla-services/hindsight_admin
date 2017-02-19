@@ -27,6 +27,7 @@
 #include "plugins.h"
 #include "session.h"
 #include "tester.h"
+#include "utilization.h"
 
 #ifdef __cplusplus
 extern "C"
@@ -100,7 +101,8 @@ void hs::hindsight_cfg::load_cfg(const string &fn)
         m_hs_output = fs::absolute(m_hs_output, m_cfg.parent_path());
       }
       lua_pop(L, 1);
-      m_stats = m_hs_output / "hindsight.tsv";
+      m_plugins = m_hs_output / "plugins.tsv";
+      m_utilization = m_hs_output / "utilization.tsv";
 
       lua_getglobal(L, "analysis_lua_path");
       m_lua_path = lua_tostring(L, -1);
@@ -243,6 +245,10 @@ void hs::hindsight_admin::onAuthEvent()
 {
   if (m_session.login().loggedIn()) {
     m_tw = new Wt::WTabWidget(m_admin);
+
+    hs::utilization *utilization = new hs::utilization(&m_session, m_hs_cfg);
+    m_tw->addTab(utilization, tr("tab_utilization"));
+
     hs::plugins *plugins = new hs::plugins(&m_session, m_hs_cfg);
     m_tw->addTab(plugins, tr("tab_plugins"));
     m_tw->addTab(new hs::tester(&m_session, m_hs_cfg, plugins), tr("tab_deploy"));
