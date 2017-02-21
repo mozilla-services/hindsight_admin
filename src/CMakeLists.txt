@@ -15,6 +15,7 @@ set(HINDSIGHT_ADMIN_SRC
   session.cpp
   source_viewer.cpp
   user.cpp
+  utilization.cpp
 )
 
 add_executable(hindsight_admin ${HINDSIGHT_ADMIN_SRC})

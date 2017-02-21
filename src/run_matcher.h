@@ -43,7 +43,8 @@ run_matcher(const boost::filesystem::path &path,
             const std::string &user,
             Wt::WContainerWidget *c,
             struct input_msg *msgs,
-            size_t msgs_size);
+            size_t msgs_size,
+            std::string *err_msg);
 
 lua_State* validate_cfg(const std::string &cfg, const std::string &user,
                         lsb_message_matcher **mm, std::string *err_msg);

@@ -161,12 +161,12 @@ int hs::plugins::find_create(const std::string plugin, lsb_state state)
 
 void hs::plugins::load_stats()
 {
-  if (m_hs_cfg->m_stats.empty()) return;
+  if (m_hs_cfg->m_plugins.empty()) return;
 
   bool header = true;
   int cnt     = 0;
   string s;
-  ifstream ifs(m_hs_cfg->m_stats.string().c_str());
+  ifstream ifs(m_hs_cfg->m_plugins.string().c_str());
   vector<string> cols;
 
   int rows = m_stats.rowCount();
@@ -180,7 +180,7 @@ void hs::plugins::load_stats()
   while (getline(ifs, s).good()) {
     boost::split(cols, s, boost::is_any_of("\t"));
     cnt = cols.size();
-    if (cnt != stat_columns) continue;
+    if (cnt < stat_columns) continue;
 
     if (header) {
       header = false;
@@ -188,7 +188,7 @@ void hs::plugins::load_stats()
     }
 
     int row = find_create(cols[0], LSB_RUNNING);
-    for (int col = 1; col < cnt; ++col) {
+    for (int col = 1; col < stat_columns; ++col) {
       m_stats.item(row, col + 2)->setData(boost::lexical_cast<double>(cols[col]),
                                           Wt::DisplayRole);
     }
@@ -259,7 +259,7 @@ Wt::WTableView* hs::plugins::create_view()
   m_view->setAttributeValue("oncontextmenu", "event.cancelBubble = true; event.returnValue = false; return false;");
   m_view->mouseWentUp().connect(this, &hs::plugins::popup);
 
-  m_timer.setInterval(7000);
+  m_timer.setInterval(6000);
   m_timer.timeout().connect(this, &hs::plugins::load_stats);
   m_timer.start();
   return m_view;

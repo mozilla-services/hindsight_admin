@@ -103,15 +103,22 @@ void hs::output_tester::run_matcher()
 {
   m_msgs->clear();
   m_debug->clear();
+  string err_msg;
   m_inputs_cnt = hs::run_matcher(m_hs_cfg->m_hs_output,
                                  m_cfg->text().toUTF8(),
                                  m_session->user_name(),
                                  m_msgs,
-                                 m_inputs, g_max_messages);
+                                 m_inputs, g_max_messages,
+                                 &err_msg);
 
   if (m_inputs_cnt == 0) {
-    m_logs = new Wt::WTextArea(m_debug);
-    m_logs->setText(tr("no_matches"));
+    Wt::WText *t = new Wt::WText(m_debug);
+    if (err_msg.empty()) {
+      t->setText(tr("no_matches"));
+    } else {
+      t->setText(err_msg);
+    }
+    t->setStyleClass("result_error");
   }
 }
 
@@ -223,7 +230,7 @@ void hs::output_tester::test_plugin()
     }
   }
   if (rv <= 0) {
-    rv = lsb_heka_timer_event(hsb, 0, true);
+    rv = lsb_heka_timer_event(hsb,  time(NULL) * 1e9, true);
     if (rv > 0) {
       lcb(this, "", 7, "%s\n", lsb_heka_get_error(hsb));
     }
@@ -278,6 +285,8 @@ void hs::output_tester::deploy_plugin()
     lua_setglobal(L, "batch_dir");
     lua_pushstring(L, val.c_str());
     lua_setglobal(L, "output_dir");
+    lua_pushboolean(L, 1);
+    lua_setglobal(L, "remove_checkpoints_on_terminate");
     lua_pushboolean(L, 1);
     lua_setglobal(L, "hindsight_admin");
 
