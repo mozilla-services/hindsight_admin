@@ -351,16 +351,6 @@ void hs::tester::deploy_plugin()
   if (fh) {
     strip_table(L, strip_cfg);
     lua_pushvalue(L, LUA_GLOBALSINDEX);
-    // simple sdbm hash to consistently distribute the plugins over the
-    // available analysis threads
-    unsigned long hash = 0;
-    const char *str = fn.c_str();
-    int c;
-    while ((c = *str++)) {
-      hash = c + (hash << 6) + (hash << 16) - hash;
-    }
-    lua_pushinteger(L, (lua_Integer)(hash % 64));
-    lua_setglobal(L, "thread");
 
     // round the ticker_interval up to the next minute
     lua_getglobal(L, ticker_interval);
