@@ -104,6 +104,7 @@ Wt::WStandardItem* hs::utilization::insert_row(Wt::WStandardItem *parent, int ro
     if (col == 2 && parent ==  m_stats.invisibleRootItem()) {
       set_utilization(tmp, val);
     }
+    parent->setChild(row, col, tmp);
   }
   return item;
 }
