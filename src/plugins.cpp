@@ -377,7 +377,7 @@ void hs::plugins::popup_action()
         mb->setMaximumSize(900, 750);
         mb->contents()->addWidget(luap);
 
-        boost::filesystem::path cfg_file = m_hs_cfg->m_hs_run / ptype / (plugin + ".fcfg");
+        boost::filesystem::path cfg_file = m_hs_cfg->m_hs_run / ptype / (plugin + ".rtc");
         Wt::WScrollArea *sa = new Wt::WScrollArea();
         cfgp->setCentralWidget(sa);
         cfg_viewer *cv = new cfg_viewer();
@@ -469,7 +469,7 @@ void hs::plugins::popup_action()
           remove(m_hs_cfg->m_hs_run / ptype / (plugin + ".lua"));
           remove(m_hs_cfg->m_hs_run / ptype / (plugin + ".off"));
           remove(m_hs_cfg->m_hs_run / ptype / (plugin + ".cfg"));
-          remove(m_hs_cfg->m_hs_run / ptype / (plugin + ".fcfg"));
+          remove(m_hs_cfg->m_hs_run / ptype / (plugin + ".rtc"));
           remove(m_hs_cfg->m_hs_run / ptype / (plugin + ".err"));
           m_filter->removeRows(row, 1);
         } else {
