@@ -291,7 +291,7 @@ void hs::tester::test_plugin()
   }
   if (rv <= 0) {
     m_im_limit = m_hs_cfg->m_te_im_limit;
-    rv = lsb_heka_timer_event(hsb, time(NULL) * 1e9, true);
+    rv = lsb_heka_timer_event(hsb, time(NULL), true);
     if (rv > 0) {
       lcb(this, "", 7, "%s\n", lsb_heka_get_error(hsb));
     }
