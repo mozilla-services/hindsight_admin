@@ -230,7 +230,7 @@ void hs::output_tester::test_plugin()
     }
   }
   if (rv <= 0) {
-    rv = lsb_heka_timer_event(hsb,  time(NULL) * 1e9, true);
+    rv = lsb_heka_timer_event(hsb,  time(NULL), true);
     if (rv > 0) {
       lcb(this, "", 7, "%s\n", lsb_heka_get_error(hsb));
     }
