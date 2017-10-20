@@ -3,7 +3,7 @@
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 cmake_minimum_required(VERSION 3.5 FATAL_ERROR)
-project(hindsight_admin VERSION 0.0.9)
+project(hindsight_admin VERSION 0.0.10)
 set(CPACK_PACKAGE_NAME hindsight-admin)
 set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Hindsight Administration Interface")
 set(CPACK_PACKAGE_VERSION_MAJOR ${PROJECT_VERSION_MAJOR})
@@ -42,7 +42,9 @@ if(CMAKE_HOST_UNIX)
   ${LIBDL_LIBRARY})
 endif()
 
-find_package(Boost 1.53.0 REQUIRED
+add_definitions(-DBOOST_SIGNALS_NO_DEPRECATION_WARNING)
+
+find_package(Boost 1.65.1 REQUIRED
 date_time
 filesystem
 program_options
