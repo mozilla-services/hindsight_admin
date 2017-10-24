@@ -15,7 +15,9 @@ set(CPACK_STRIP_FILES           TRUE)
 set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_SOURCE_DIR}/LICENSE")
 
 set(CPACK_RPM_PACKAGE_LICENSE    "MPLv2.0")
-set(CPACK_DEBIAN_PACKAGE_DEPENDS "witty (>=3.3.4), source-highlight (>=3.1), luasandbox (>=1.2), hindsight (>= 0.13.0)")
+set(CPACK_DEBIAN_PACKAGE_DEPENDS "source-highlight (>=3.1), luasandbox (>=1.2), hindsight (>= 0.13.0)")
+set(CPACK_DEBIAN_FILE_NAME      "DEB-DEFAULT")
+set(CPACK_RPM_FILE_NAME         "RPM-DEFAULT")
 
 set(PROJECT_PATH "${CMAKE_BINARY_DIR}/${PROJECT_NAME}")
 set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
