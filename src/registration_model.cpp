@@ -77,10 +77,9 @@ bool hs::registration_model::validateField(Wt::WFormModel::Field field)
   bool validated = Wt::Auth::RegistrationModel::validateField(field);
   if (field == Wt::Auth::RegistrationModel::EmailField && !m_auth_domains.empty()) {
     bool auth_domain = false;
-    std::string email = valueText(Wt::Auth::RegistrationModel::EmailField).toUTF8();
-    size_t pos = email.find('@');
+    size_t pos = m_oauth_email.find('@');
     if (pos != std::string::npos) {
-      if (m_auth_domains.find(email.substr(pos + 1)) != m_auth_domains.end()) {
+      if (m_auth_domains.find(m_oauth_email.substr(pos + 1)) != m_auth_domains.end()) {
         auth_domain = true;
       }
     }
@@ -102,11 +101,12 @@ bool hs::registration_model::registerIdentified(const Wt::Auth::Identity &identi
 {
   bool ok = Wt::Auth::RegistrationModel::registerIdentified(identity);
   if (!ok) {
+    m_oauth_email = identity.email();
     if (!identity.name().empty()) {
       std::string name = normalize_name(identity.name().toUTF8());
       setValue(LoginNameField,  Wt::WString::fromUTF8(name));
-    } else if (!identity.email().empty()) {
-      std::string suggested = identity.email();
+    } else if (!m_oauth_email.empty()) {
+      std::string suggested = m_oauth_email;
       std::size_t i = suggested.find('@');
       if (i != std::string::npos) {
         suggested = normalize_name(suggested.substr(0, i));

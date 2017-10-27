@@ -45,6 +45,8 @@
 	<session-id-cookie>false</session-id-cookie>
 	<properties>
         <!-- access control -->
+        <!-- allow the user to be pre-authenticated by a proxy using a trusted header -->
+        <!-- <property name="preAuthHeader">OIDC-CLAIM-USER-PROFILE-email</property> -->
         <property name="enableGuest">false</property>
         <property name="enableRegistration">false</property>
         <!-- semicolon delimited list -->

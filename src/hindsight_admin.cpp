@@ -222,28 +222,44 @@ hs::hindsight_admin::hindsight_admin(const Wt::WEnvironment &env, const hindsigh
   useStyleSheet("/css/hindsight_admin.css");
   setCssTheme("polished");
   //setTheme(new Wt::WBootstrapTheme());
-  m_session.login().changed().connect(this, &hindsight_admin::onAuthEvent);
-
-  hs::auth_widget *aw = new hs::auth_widget(m_session);
-
   WText *title = new WText("<h3>Hindsight Admin (" + get_version() + ")</h3>");
   root()->addWidget(title);
+  //  WApplication::instance()->internalPathChanged().connect(this, &hindsight_admin::ipath_change);
 
-  root()->addWidget(aw);
-
-  m_admin = new WContainerWidget(root());
-  m_admin->setStyleClass("main");
-
-//  WApplication::instance()->internalPathChanged()
-//      .connect(this, &hindsight_admin::ipath_change);
-
-  aw->processEnvironment();
+  if (isPreAuthed(env)) {
+    WText *au = new WText(m_session.get_original_name());
+    root()->addWidget(au);
+    au->setFloatSide(Side::Right);
+    m_admin = new WContainerWidget(root());
+    m_admin->setStyleClass("main");
+    renderSite();
+  } else {
+    m_session.login().changed().connect(this, &hindsight_admin::onAuthEvent);
+    hs::auth_widget *aw = new hs::auth_widget(m_session);
+    root()->addWidget(aw);
+    m_admin = new WContainerWidget(root());
+    m_admin->setStyleClass("main");
+    aw->processEnvironment();
+  }
 }
 
 
-void hs::hindsight_admin::onAuthEvent()
+bool hs::hindsight_admin::isPreAuthed(const Wt::WEnvironment &env)
 {
-  if (m_session.login().loggedIn()) {
+  std::string val;
+  if (Wt::WApplication::instance()->readConfigurationProperty("preAuthHeader", val)) {
+    auto user = env.headerValue(val);
+    if (!user.empty()) {
+      m_session.set_user_name(user);
+      return true;
+    }
+  }
+  return false;
+}
+
+
+void hs::hindsight_admin::renderSite()
+{
     m_tw = new Wt::WTabWidget(m_admin);
 
     hs::utilization *utilization = new hs::utilization(&m_session, m_hs_cfg);
@@ -275,6 +291,13 @@ void hs::hindsight_admin::onAuthEvent()
 
     Wt::WContainerWidget *footer = new Wt::WContainerWidget(m_admin);
     footer->setStyleClass("copyright");
+}
+
+
+void hs::hindsight_admin::onAuthEvent()
+{
+  if (m_session.login().loggedIn()) {
+    renderSite();
   } else {
     m_admin->clear();
   }

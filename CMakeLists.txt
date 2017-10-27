@@ -3,7 +3,7 @@
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 cmake_minimum_required(VERSION 3.5 FATAL_ERROR)
-project(hindsight_admin VERSION 0.0.9)
+project(hindsight_admin VERSION 0.0.10)
 set(CPACK_PACKAGE_NAME hindsight-admin)
 set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Hindsight Administration Interface")
 set(CPACK_PACKAGE_VERSION_MAJOR ${PROJECT_VERSION_MAJOR})
@@ -15,7 +15,9 @@ set(CPACK_STRIP_FILES           TRUE)
 set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_SOURCE_DIR}/LICENSE")
 
 set(CPACK_RPM_PACKAGE_LICENSE    "MPLv2.0")
-set(CPACK_DEBIAN_PACKAGE_DEPENDS "witty (>=3.3.4), source-highlight (>=3.1), luasandbox (>=1.2), hindsight (>= 0.13.0)")
+set(CPACK_DEBIAN_PACKAGE_DEPENDS "source-highlight (>=3.1), luasandbox (>=1.2), hindsight (>= 0.13.0)")
+set(CPACK_DEBIAN_FILE_NAME      "DEB-DEFAULT")
+set(CPACK_RPM_FILE_NAME         "RPM-DEFAULT")
 
 set(PROJECT_PATH "${CMAKE_BINARY_DIR}/${PROJECT_NAME}")
 set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
@@ -42,7 +44,9 @@ if(CMAKE_HOST_UNIX)
   ${LIBDL_LIBRARY})
 endif()
 
-find_package(Boost 1.53.0 REQUIRED
+add_definitions(-DBOOST_SIGNALS_NO_DEPRECATION_WARNING)
+
+find_package(Boost 1.65.1 REQUIRED
 date_time
 filesystem
 program_options
