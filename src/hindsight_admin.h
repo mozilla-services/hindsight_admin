@@ -57,6 +57,8 @@ private:
   Wt::WContainerWidget                  *m_admin;
   Wt::WTabWidget                        *m_tw;
   void onAuthEvent();
+  void renderSite();
+  bool isPreAuthed(const Wt::WEnvironment &env);
 };
 
 

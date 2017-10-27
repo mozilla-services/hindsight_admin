@@ -43,12 +43,28 @@ oauth_services g_oauth_services;
 }
 
 
-std::string hs::session::user_name() const
+std::string hs::session::get_user_name() const
 {
+  if (!m_preauth_user_name.empty()) {
+    return m_preauth_user_name;
+  }
   if (m_login.loggedIn()) {
     return m_login.user().identity(Auth::Identity::LoginName).toUTF8();
   }
   return "UNKNOWN";
+}
+
+
+const std::string& hs::session::get_original_name() const
+{
+  return m_preauth_original_name;
+}
+
+
+void hs::session::set_user_name(const std::string &name)
+{
+  m_preauth_original_name = name;
+  m_preauth_user_name = normalize_name(name);
 }
 
 

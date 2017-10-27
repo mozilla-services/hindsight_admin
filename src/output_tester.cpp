@@ -106,7 +106,7 @@ void hs::output_tester::run_matcher()
   string err_msg;
   m_inputs_cnt = hs::run_matcher(m_hs_cfg->m_hs_output,
                                  m_cfg->text().toUTF8(),
-                                 m_session->user_name(),
+                                 m_session->get_user_name(),
                                  m_msgs,
                                  m_inputs, g_max_messages,
                                  &err_msg);
@@ -169,7 +169,7 @@ Wt::WWidget* hs::output_tester::result()
   m_debug = new Wt::WContainerWidget(c);
   m_debug->setStyleClass("debug_output");
 
-  auto anchor = new Wt::WAnchor(Wt::WLink("/dashboard_output/output/" + m_session->user_name()), tr("plugin_output_dir"), c);
+  auto anchor = new Wt::WAnchor(Wt::WLink("/dashboard_output/output/" + m_session->get_user_name()), tr("plugin_output_dir"), c);
   anchor->setTarget(Wt::AnchorTarget::TargetNewWindow);
 
   return c;
@@ -184,7 +184,7 @@ void hs::output_tester::test_plugin()
 
   string err_msg;
   lsb_message_matcher *mm = NULL;
-  lua_State *L = validate_cfg(m_cfg->text().toUTF8(), m_session->user_name(), &mm, &err_msg);
+  lua_State *L = validate_cfg(m_cfg->text().toUTF8(), m_session->get_user_name(), &mm, &err_msg);
   lsb_destroy_message_matcher(mm);
   if (!L) {
     Wt::WText *t = new Wt::WText(err_msg, m_debug);
@@ -213,7 +213,7 @@ void hs::output_tester::test_plugin()
   if (!Wt::WApplication::instance()->readConfigurationProperty("outputDir", val)) {
     val = "/var/tmp/hsadmin/output";
   }
-  val += "/" + m_session->user_name();
+  val += "/" + m_session->get_user_name();
   cfg << "batch_dir = [[" << val << "]]\n";
   cfg << "output_dir = [[" << val << "]]\n";
   cfg << "hindsight_admin = true\n";
@@ -254,7 +254,7 @@ void hs::output_tester::deploy_plugin()
 
   string err_msg;
   lsb_message_matcher *mm = NULL;
-  lua_State *L = validate_cfg(m_cfg->text().toUTF8(), m_session->user_name(), &mm, &err_msg);
+  lua_State *L = validate_cfg(m_cfg->text().toUTF8(), m_session->get_user_name(), &mm, &err_msg);
   lsb_destroy_message_matcher(mm);
   if (!L) {
     Wt::WText *t = new Wt::WText(err_msg, m_debug);
@@ -280,7 +280,7 @@ void hs::output_tester::deploy_plugin()
     if (!Wt::WApplication::instance()->readConfigurationProperty("outputDir", val)) {
       val = "/var/tmp/hsadmin/output";
     }
-    val += "/" + m_session->user_name();
+    val += "/" + m_session->get_user_name();
     lua_pushstring(L, val.c_str());
     lua_setglobal(L, "batch_dir");
     lua_pushstring(L, val.c_str());

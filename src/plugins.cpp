@@ -290,7 +290,7 @@ void hs::plugins::popup(const Wt::WModelIndex &item, const Wt::WMouseEvent &even
       m_popup->addItem(tr("view_termination_error"))->setData(reinterpret_cast<void *>(err));
     }
 
-    if (plugin.find(m_session->user_name() + ".") != string::npos) {
+    if (plugin.find(m_session->get_user_name() + ".") != string::npos) {
       m_popup->addItem(tr("edit_plugin"))->setData(reinterpret_cast<void *>(edit));
       switch (state) {
       case LSB_RUNNING:
@@ -412,7 +412,7 @@ void hs::plugins::popup_action()
       {
         Wt::WString title(tr("success"));
         Wt::WString msg;
-        if (plugin.find(m_session->user_name() + ".") != string::npos) {
+        if (plugin.find(m_session->get_user_name() + ".") != string::npos) {
           Wt::StandardButton result = Wt::WMessageBox::show(tr("confirm"), tr("stop_plugin?").arg(plugin), Wt::Ok | Wt::Cancel);
           if (result != Wt::Ok) return;
           msg = tr("plugin_control").arg(plugin).arg(tr("stopped"));
@@ -438,7 +438,7 @@ void hs::plugins::popup_action()
       {
         Wt::WString title(tr("success"));
         Wt::WString msg;
-        if (plugin.find(m_session->user_name() + ".") != string::npos) {
+        if (plugin.find(m_session->get_user_name() + ".") != string::npos) {
           Wt::StandardButton result = Wt::WMessageBox::show(tr("confirm"), tr("restart_plugin?").arg(plugin), Wt::Ok | Wt::Cancel);
           if (result != Wt::Ok) return;
           msg = tr("plugin_control").arg(plugin).arg(tr("restarted"));
@@ -465,7 +465,7 @@ void hs::plugins::popup_action()
 
     case del:
       {
-        if (plugin.find(m_session->user_name() + ".") != string::npos) {
+        if (plugin.find(m_session->get_user_name() + ".") != string::npos) {
           remove(m_hs_cfg->m_hs_run / ptype / (plugin + ".lua"));
           remove(m_hs_cfg->m_hs_run / ptype / (plugin + ".off"));
           remove(m_hs_cfg->m_hs_run / ptype / (plugin + ".cfg"));

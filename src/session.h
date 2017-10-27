@@ -38,13 +38,17 @@ public:
   Wt::Auth::AbstractUserDatabase& users();
   Wt::Auth::Login& login() { return m_login; }
 
-  std::string user_name() const;
+  std::string get_user_name() const;
+  const std::string& get_original_name() const;
+  void set_user_name(const std::string &name);
 
 private:
   Wt::Dbo::backend::Sqlite3 m_sqlite3;
   mutable Wt::Dbo::Session  m_session;
   user_database             *m_users;
   Wt::Auth::Login           m_login;
+  std::string               m_preauth_original_name;
+  std::string               m_preauth_user_name;
 
   Wt::Dbo::ptr<user> get_user() const;
 };

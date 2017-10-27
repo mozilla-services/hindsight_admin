@@ -38,6 +38,7 @@ public:
 
 private:
   std::unordered_set<std::string> m_auth_domains;
+  std::string m_oauth_email;
 };
 
 }
