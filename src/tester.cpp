@@ -387,7 +387,7 @@ hs::tester::tester(hs::session *s, const hindsight_cfg *hs_cfg, hs::plugins *p) 
   hbox->addWidget(result(), 1);
 
   for (size_t i = 0; i < g_max_messages; ++i) {
-    lsb_init_input_buffer(&m_inputs[i].b, 8000000);
+    lsb_init_input_buffer(&m_inputs[i].b, hs_cfg->m_max_message_size);
     lsb_init_heka_message(&m_inputs[i].m, 10);
   }
 }

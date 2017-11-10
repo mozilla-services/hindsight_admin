@@ -133,6 +133,13 @@ void hs::hindsight_cfg::load_cfg(const string &fn)
       m_oinstruction_limit = -1;
       m_pm_im_limit = 0;
       m_te_im_limit = 10;
+      m_max_message_size = 1024 * 1024 * 8;
+
+      lua_getglobal(L, "max_message_size");
+      if (lua_type(L, -1) == LUA_TNUMBER) {
+        m_max_message_size = static_cast<int>(lua_tointeger(L, -1));
+      }
+      lua_pop(L, 1);
       lua_getglobal(L, "analysis_defaults");
       if (lua_type(L, -1) == LUA_TTABLE) {
         lua_getfield(L, -1, "output_limit");
@@ -270,6 +277,8 @@ void hs::hindsight_admin::renderSite()
   hs::plugins *plugins = new hs::plugins(&m_session, m_hs_cfg);
   m_tw->addTab(plugins, tr("tab_plugins"));
 
+  m_tw->addTab(new hs::matcher(m_hs_cfg), tr("tab_matcher"));
+
   if (!m_hs_cfg->m_hs_load.empty()) {
     m_tw->addTab(new hs::tester(&m_session, m_hs_cfg, plugins), tr("tab_deploy"));
   }
@@ -280,15 +289,9 @@ void hs::hindsight_admin::renderSite()
     m_tw->addTab(new hs::output_tester(&m_session, m_hs_cfg, plugins), tr("tab_output_deploy"));
   }
 
-  Wt::WContainerWidget *lpeg = new Wt::WContainerWidget();
-  lpeg->addWidget(new Wt::WText("Grammar Tester - TBD<br/>"));
-  Wt::WAnchor *anchor = new Wt::WAnchor(Wt::WLink("http://lpeg.trink.com"), tr("lpeg_grammar_tester"), lpeg);
-  anchor->setTarget(Wt::AnchorTarget::TargetNewWindow);
-  m_tw->addTab(lpeg, tr("tab_lpeg"));
-
   Wt::WContainerWidget *dash = new Wt::WContainerWidget();
   dash->addWidget(new Wt::WText("Output Dashboards - TBD<br/>"));
-  anchor = new Wt::WAnchor(Wt::WLink("/dashboard_output/"), tr("raw_output"), dash);
+  Wt::WAnchor *anchor = new Wt::WAnchor(Wt::WLink("/dashboard_output/"), tr("raw_output"), dash);
   anchor->setTarget(Wt::AnchorTarget::TargetNewWindow);
 
   anchor = new Wt::WAnchor(Wt::WLink("/dashboard_output/graphs"), tr("graph_output"), dash);

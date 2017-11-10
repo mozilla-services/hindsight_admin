@@ -22,9 +22,12 @@ extern "C"
 
 #include <Wt/WTreeNode>
 #include <Wt/WContainerWidget>
+#include <Wt/WLineEdit>
 #include <boost/filesystem.hpp>
 #include <luasandbox/util/heka_message.h>
 #include <luasandbox/util/heka_message_matcher.h>
+
+#include "hindsight_admin.h"
 
 namespace mozilla {
 namespace services {
@@ -35,6 +38,22 @@ static const size_t g_max_messages = 5;
 struct input_msg {
   lsb_input_buffer b;
   lsb_heka_message m;
+};
+
+class matcher : public Wt::WContainerWidget {
+public:
+  matcher(const hindsight_cfg *hs_cfg);
+  ~matcher();
+
+private:
+  void run_matcher();
+
+  const hindsight_cfg *m_hs_cfg;
+  // pointers managed by the container
+  Wt::WLineEdit         *m_mms;
+  Wt::WText             *m_result;
+  // end managed pointers
+  struct input_msg      m_im;
 };
 
 size_t
