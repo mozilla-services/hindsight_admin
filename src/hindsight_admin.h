@@ -44,6 +44,7 @@ struct hindsight_cfg {
   int                     m_te_im_limit;
   int                     m_omemory_limit;
   int                     m_oinstruction_limit;
+  int                     m_max_message_size;
 };
 
 

@@ -13,6 +13,7 @@
 
 #include <Wt/WText>
 #include <Wt/WTree>
+#include <Wt/WPushButton>
 #include <boost/lexical_cast.hpp>
 #include <luasandbox/heka/sandbox.h>
 #include <luasandbox/util/protobuf.h>
@@ -112,6 +113,62 @@ output_fields(lsb_heka_message *m, Wt::WTreeNode *n)
       break;
     }
     n->addChildNode(new Wt::WTreeNode(Wt::WString(ss.str(), Wt::CharEncoding::UTF8)));
+  }
+}
+
+
+static void
+output_fields(lsb_heka_message *m, stringstream &ss)
+{
+  const char *p, *e;
+  for (int i = 0; i < m->fields_len; ++i) {
+    lsb_heka_field *hf = &m->fields[i];
+    ss << "\n" << std::string(hf->name.s, hf->name.len) << " = ";
+    p = hf->value.s;
+    e = p + hf->value.len;
+    switch (hf->value_type) {
+    case LSB_PB_STRING:
+    case LSB_PB_BYTES:
+      output_string_values(p, e, ss);
+      break;
+    case LSB_PB_INTEGER:
+    case LSB_PB_BOOL:
+      output_integer_values(p, e, ss);
+      break;
+    case LSB_PB_DOUBLE:
+      output_double_values(p, e, ss);
+      break;
+    }
+  }
+}
+
+
+static void
+output_message(lsb_heka_message *m, stringstream &ss)
+{
+  ss << "Uuid = ";
+  for (unsigned i = 0; i < LSB_UUID_SIZE; ++i) {
+    ss << std::setfill('0') << std::setw(2) << std::hex << (unsigned int)((unsigned char)m->uuid.s[i]);
+  }
+
+  char ts[80];
+  time_t t = m->timestamp / 1000000000;
+  struct tm *tms = gmtime(&t);
+  strftime(ts, sizeof ts, "%F %X", tms);
+  ss << "\nTimestamp = " << ts;
+  ss << "\nType = " << std::string(m->type.s, m->type.len);
+  ss << "\nLogger = " << std::string(m->logger.s, m->logger.len);
+  ss << "\nSeverity = " << std::dec << m->severity;
+  ss << "\nPayload = " << std::string(m->payload.s, m->payload.len);
+  ss << "\nEnvVersion = " << std::string(m->env_version.s, m->env_version.len);
+  ss << "\nPid = ";
+  if (m->pid != INT_MIN) {
+    ss << std::dec << m->pid;
+  }
+  ss << "\nHostname = " << std::string(m->hostname.s, m->hostname.len);
+  if (m->fields_len) {
+    ss << "\nFields";
+    output_fields(m, ss);
   }
 }
 
@@ -388,4 +445,78 @@ void hs::output_message(lsb_heka_message *m, Wt::WTreeNode *root)
     output_fields(m, f);
     n->addChildNode(f);
   }
+}
+
+
+hs::matcher::matcher(const hindsight_cfg *hs_cfg) :
+    m_hs_cfg(hs_cfg)
+{
+  Wt::WContainerWidget *container = new Wt::WContainerWidget(this);
+  container->setStyleClass("message_matcher");
+
+  Wt::WText *t = new Wt::WText(tr("heka_mm_cfg"), container);
+  t->setStyleClass("area_title");
+  new Wt::WBreak(container);
+
+  m_mms = new Wt::WLineEdit(container);
+  m_mms->setText("TRUE");
+
+  new Wt::WBreak(container);
+  Wt::WPushButton *button = new Wt::WPushButton(tr("run_matcher"), container);
+  button->clicked().connect(this, &matcher::run_matcher);
+
+  new Wt::WBreak(container);
+  new Wt::WBreak(container);
+  m_result = new Wt::WText(container);
+  m_result->setTextFormat(Wt::PlainText);
+
+  lsb_init_input_buffer(&m_im.b, hs_cfg->m_max_message_size);
+  lsb_init_heka_message(&m_im.m, 10);
+}
+
+
+hs::matcher::~matcher()
+{
+  lsb_free_heka_message(&m_im.m);
+  lsb_free_input_buffer(&m_im.b);
+}
+
+
+void hs::matcher::run_matcher()
+{
+  stringstream ss;
+  lsb_message_matcher *mm = lsb_create_message_matcher(m_mms->text().toUTF8().c_str());
+  if (!mm) {
+    m_result->setText("invalid message matcher");
+    return;
+  }
+
+  fs::path path = m_hs_cfg->m_hs_output;
+  fs::path fn = path / "input" / (get_file_number(path) + ".log");
+  FILE *fh = fopen(fn.string().c_str(), "rb");
+  if (!fh) {
+    ss << "could not open the log: " << fn;
+    m_result->setText(ss.str());
+    lsb_destroy_message_matcher(mm);
+    return;
+  }
+
+  size_t cnt = 0;
+  ssize_t bytes_read = 1;
+  size_t discarded_bytes = 0;
+  while (cnt < g_max_messages && bytes_read != 0) {
+    if (lsb_find_heka_message(&m_im.m, &m_im.b, true, &discarded_bytes, NULL)) {
+      if (lsb_eval_message_matcher(mm, &m_im.m)) {
+        output_message(&m_im.m, ss);
+        ss << "\n\n";
+        ++cnt;
+      }
+    } else {
+      bytes_read = read_file(fh, &m_im.b);
+    }
+  }
+  fclose(fh);
+  lsb_destroy_message_matcher(mm);
+  if (cnt == 0) ss << "no matches";
+  m_result->setText(ss.str());
 }

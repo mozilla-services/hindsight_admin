@@ -57,6 +57,7 @@
     <message id="injected_messages">Injected Messages</message>
     <message id="heka_ap">Heka Analysis Plugin</message>
     <message id="heka_ap_cfg">Heka Analysis Plugin Configuration</message>
+    <message id="heka_mm_cfg">Heka Message Matcher</message>
     <message id="heka_op_cfg">Heka Output Plugin Configuration</message>
     <message id="heka_op_plugin">Heka Output Plugin</message>
     <message id="no_matches">no matches found in the current output file</message>
@@ -75,7 +76,7 @@
     <message id="tab_plugins">Plugins</message>
     <message id="tab_deploy">Analysis Plugin Deployment</message>
     <message id="tab_output_deploy">Output Plugin Deployment</message>
-    <message id="tab_lpeg">Grammar Tester</message>
+    <message id="tab_matcher">Matcher</message>
     <message id="tab_dashboards">Dashboards</message>
     <message id="lpeg_grammar_tester">External Grammar Tester</message>
 
