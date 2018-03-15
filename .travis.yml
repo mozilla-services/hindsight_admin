@@ -1,0 +1,25 @@
+language: generic
+sudo: required
+services:
+  - docker
+
+script:
+  - docker build -t mozilla/hindsight_admin .
+  - |
+    docker run --rm mozilla/hindsight_admin \
+    bash -c 'cd /root/hindsight_admin/release && ctest -V'
+  - mkdir dist
+  - |
+    docker run -v `pwd`/dist:/dist --rm mozilla/hindsight_admin \
+    bash -c 'cp /root/hindsight_admin/release/*.rpm /dist'
+  - sha256sum dist/*
+
+deploy:
+  - provider: script
+    script: bash docker_push.sh master
+    on:
+      branch: master
+  - provider: script
+    script: bash docker_push.sh dev
+    on:
+      branch: dev
