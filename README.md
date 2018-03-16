@@ -11,8 +11,8 @@ https://hsadmin.trink.com/
 
 * GCC (4.8+)
 * CMake (3.5+) - http://cmake.org/cmake/resources/software.html
-* Boost (1.53+) - http://www.boost.org/users/download/
-* Wt (3.3.4) - http://www.webtoolkit.eu/wt/download
+* Boost (1.65.1) - http://www.boost.org/users/download/
+* Wt (3.3.9) - http://www.webtoolkit.eu/wt/download
 * sqlite (3.11+) - https://sqlite.org/
 
 ### Runtime requirements
