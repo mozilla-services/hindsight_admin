@@ -3,7 +3,7 @@
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 cmake_minimum_required(VERSION 3.5 FATAL_ERROR)
-project(hindsight_admin VERSION 0.0.11)
+project(hindsight_admin VERSION 0.0.12)
 set(CPACK_PACKAGE_NAME hindsight-admin)
 set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Hindsight Administration Interface")
 set(CPACK_PACKAGE_VERSION_MAJOR ${PROJECT_VERSION_MAJOR})
@@ -69,5 +69,6 @@ add_subdirectory(src)
 install(FILES "${WT_CONFIG_NAME}" DESTINATION /etc/wt)
 install(DIRECTORY resource_bundle DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/${PROJECT_NAME})
 install(DIRECTORY resources DESTINATION  ${CMAKE_INSTALL_DATAROOTDIR}/${PROJECT_NAME})
+install(DIRECTORY external DESTINATION  ${CMAKE_INSTALL_DATAROOTDIR}/${PROJECT_NAME})
 install(DIRECTORY css DESTINATION  ${CMAKE_INSTALL_DATAROOTDIR}/${PROJECT_NAME})
 install(PROGRAMS run.sh DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/${PROJECT_NAME})

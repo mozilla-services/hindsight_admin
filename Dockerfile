@@ -1,4 +1,4 @@
-FROM centos:7
+FROM mozilla/lua_sandbox_extensions:master
 
 WORKDIR /root
 
@@ -19,7 +19,7 @@ ENV PERL5LIB='PERL5LIB=/opt/rh/devtoolset-6/root//usr/lib64/perl5/vendor_perl:/o
     PATH=/opt/rh/devtoolset-6/root/usr/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin \
     PYTHONPATH=/opt/rh/devtoolset-6/root/usr/lib64/python2.7/site-packages:/opt/rh/devtoolset-6/root/usr/lib/python2.7/site-packages
 
-# Compile and install boost, libwt, and lua_sandbox
+# Compile and install boost and libwt
 #
 # We have boost and libwt pinned and specific versions here, and build lua_sandbox
 # from the master branch
@@ -33,11 +33,7 @@ RUN curl -OL https://dl.bintray.com/boostorg/release/1.65.1/source/boost_1_65_1.
         "0f0e2638001a312b0cb3f920a6eaf9692ebb4ad70f33068ca888724a7f482501" ]]; then exit 1; fi && \
     tar -zxf 3.3.9.tar.gz && mkdir -p wt-3.3.9/release && \
     cd wt-3.3.9/release && cmake cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTS=off -DSHARED_LIBS=OFF .. && \
-    make -j4 && make install && cd ../.. && \
-    git clone https://github.com/mozilla-services/lua_sandbox && \
-    mkdir -p lua_sandbox/release && cd lua_sandbox/release && \
-    cmake -DCMAKE_BUILD_TYPE=release .. && \
-    make && ctest && cpack -G RPM && rpm -i *.rpm
+    make -j4 && make install && cd ../..
 
 # Add the hindsight_admin project and compile/package/install hindsight_admin
 ADD . /root/hindsight_admin
@@ -45,6 +41,5 @@ RUN mkdir -p hindsight_admin/release && cd hindsight_admin/release && \
     cmake -DCMAKE_BUILD_TYPE=release .. && \
     make && cpack -G RPM && rpm -i *.rpm
 
-# Add a hindsight user and default RUN command
-RUN groupadd hindsight && useradd -g hindsight -s /bin/bash -m hindsight
+# Add a default RUN command
 CMD /usr/bin/su - hindsight -c 'cd /home/hindsight && /usr/share/hindsight_admin/run.sh'
