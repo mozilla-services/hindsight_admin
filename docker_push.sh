@@ -1,8 +1,8 @@
 #!/bin/bash
 
 tag=""
-if [[ $1 = "master" ]]; then
-    tag="mozilla/hindsight_admin:master"
+if [[ $1 = "main" ]]; then
+    tag="mozilla/hindsight_admin:main"
 elif [[ $1 = "dev" ]]; then
     tag="mozilla/hindsight_admin:dev"
 else

@@ -1,4 +1,4 @@
-FROM mozilla/lua_sandbox_extensions:master
+FROM mozilla/lua_sandbox_extensions:main
 
 WORKDIR /root
 
@@ -22,7 +22,7 @@ ENV PERL5LIB='PERL5LIB=/opt/rh/devtoolset-6/root//usr/lib64/perl5/vendor_perl:/o
 # Compile and install boost and libwt
 #
 # We have boost and libwt pinned and specific versions here, and build lua_sandbox
-# from the master branch
+# from the main branch
 RUN curl -OL https://dl.bintray.com/boostorg/release/1.65.1/source/boost_1_65_1.tar.gz && \
     if [[ `sha256sum boost_1_65_1.tar.gz | awk '{print $1}'` != \
         "a13de2c8fbad635e6ba9c8f8714a0e6b4264b60a29b964b940a22554705b6b60" ]]; then exit 1; fi && \
